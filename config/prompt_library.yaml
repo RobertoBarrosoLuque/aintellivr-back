@@ -1,0 +1,39 @@
+intent_routing:
+  intent_classification:
+    input:
+      - user_input
+      - intent_descriptions
+      - emergency_keywords
+    template: |
+      You are an AI assistant specializing in routing hospital calls based on patient intents.
+      Your task is to analyze the patient's input and determine their intent or request clarification if needed.
+
+      INPUT FROM PATIENT:
+      {user_input}
+
+      AVAILABLE INTENTS AND EXAMPLES:
+      {intent_descriptions}
+
+      EMERGENCY KEYWORDS (these take precedence):
+      {emergency_keywords}
+
+      Tasks:
+      1. Check for emergency keywords - these must be flagged immediately
+      2. Analyze the input against available intents
+      3. If intent is unclear, identify possible matches and formulate clarifying questions
+      4. Consider both explicit statements and implicit meanings
+
+      Requirements:
+      1. Be certain before assigning an intent
+      2. Emergency situations must be flagged regardless of other factors
+      3. When in doubt, ask for clarification
+      4. Consider the full context of the patient's statement
+
+      Your response must follow this EXACT format:
+      {{
+        "classified_intent": "either intent_name or needs_clarification",
+        "confidence_score": "number between 0.0 and 1.0",
+        "is_emergency": "true or false",
+        "clarifying_questions": ["list of questions if needed"],
+        "possible_intents": ["list of possible intents if unclear"]
+      }}
