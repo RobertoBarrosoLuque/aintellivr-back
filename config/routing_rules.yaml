@@ -1,0 +1,180 @@
+# Hospital Call Routing Configuration
+# This YAML defines the routing logic for the hospital's automated phone system.
+# It provides context and examples to help the AI system understand and classify caller intents.
+
+departments:
+  orthopedics:
+    name: "Orthopedics Department"
+    description: >
+      Department handling musculoskeletal conditions including bone fractures, 
+      joint pain, sports injuries, and chronic conditions like arthritis. 
+      Patients often call about injury assessments, follow-up appointments, 
+      and post-surgery care.
+    handles_emergencies: true
+
+  cardiovascular:
+    name: "Cardiovascular Department"
+    description: >
+      Department specializing in heart and circulatory system conditions. 
+      Common inquiries include chest pain, heart condition monitoring, 
+      medication adjustments, and scheduling stress tests or follow-ups.
+    handles_emergencies: true
+
+  gastroenterology:
+    name: "Gastroenterology Department"
+    description: >
+      Department focused on digestive system disorders and conditions.
+      Typical calls involve scheduling endoscopies, discussing digestive 
+      symptoms, and managing chronic conditions like IBS or GERD.
+    handles_emergencies: false
+
+  new_patients:
+    name: "New Patient Services"
+    description: >
+      Services for first-time patients and general hospital information.
+      Handles new patient registration, doctor selection, and general 
+      questions about hospital services and procedures.
+    handles_emergencies: false
+
+  billing:
+    name: "Hospital Billing"
+    description: >
+      Handles all financial matters including insurance verification,
+      payment plans, bill explanations, and financial assistance programs.
+    handles_emergencies: false
+
+prerequisites:
+  patient_verification:
+    name: "Basic Patient Verification"
+    description: >
+      Basic verification of patient identity. Required for most interactions
+      except new patient registration.
+    required_info:
+      - "full_name"
+      - "date_of_birth"
+    example_collection:
+      - "Could you please state your full name?"
+      - "What is your date of birth?"
+    validation_criteria: >
+      Must match patient records exactly. Name and DOB must correspond to
+      an existing patient record.
+
+  insurance_verification:
+    name: "Insurance Information"
+    description: >
+      Verification of current insurance coverage.
+    required_info:
+      - "insurance_provider"
+      - "policy_number"
+      - "primary_holder_name"
+    example_collection:
+      - "Who is your current insurance provider?"
+      - "Could you please provide your insurance policy number?"
+    validation_criteria: >
+      Must match active insurance information in system.
+
+  emergency_assessment:
+    name: "Emergency Situation Assessment"
+    description: >
+      Quick assessment of emergency status to determine if immediate
+      medical attention is required.
+    required_info:
+      - "current_symptoms"
+      - "symptom_severity"
+      - "time_of_onset"
+    example_collection:
+      - "Are you experiencing any severe pain right now?"
+      - "When did these symptoms start?"
+    validation_criteria: >
+      Any indication of severe symptoms or chest pain requires
+      immediate emergency routing.
+
+routing_rules:
+  - intent: "orthopedic_care"
+    route_to: "orthopedics"
+    description: >
+      Queries related to bone, joint, or muscle problems. This includes both
+      acute injuries and chronic conditions affecting the musculoskeletal system.
+    required_prerequisites:
+      - patient_verification
+      - emergency_assessment
+    optional_prerequisites:
+      - insurance_verification
+    example_utterances:
+      - "I think I broke my arm yesterday"
+      - "My knee has been hurting for weeks"
+      - "I need to schedule a follow-up for my hip surgery"
+      - "I have severe back pain"
+
+  - intent: "heart_related"
+    route_to: "cardiovascular"
+    description: >
+      Queries about heart conditions or circulatory system issues. This includes
+      both urgent cardiac concerns and routine cardiovascular care.
+    required_prerequisites:
+      - patient_verification
+      - emergency_assessment
+    optional_prerequisites:
+      - insurance_verification
+    example_utterances:
+      - "I'm having chest pains"
+      - "Need to discuss my blood pressure medication"
+      - "Following up about my heart condition"
+      - "Schedule my annual heart checkup"
+
+  - intent: "digestive_issues"
+    route_to: "gastroenterology"
+    description: >
+      Queries about digestive system problems, ranging from common issues
+      like acid reflux to more serious conditions requiring specialized care.
+    required_prerequisites:
+      - patient_verification
+      - emergency_assessment
+    optional_prerequisites:
+      - insurance_verification
+    example_utterances:
+      - "I've been having severe stomach pain"
+      - "Need to schedule a colonoscopy"
+      - "Having trouble with acid reflux"
+      - "Following up about my IBS treatment"
+
+  - intent: "new_patient"
+    route_to: "new_patients"
+    description: >
+      Queries from new patients seeking to establish care or learn about
+      hospital services. Often includes general information requests.
+    required_prerequisites:
+      - emergency_assessment
+    optional_prerequisites:
+      - insurance_verification
+    example_utterances:
+      - "I'd like to become a new patient"
+      - "How do I register with your hospital"
+      - "Looking for a primary care doctor"
+      - "What insurance do you accept"
+
+  - intent: "billing_inquiry"
+    route_to: "billing"
+    description: >
+      Queries related to financial matters, including billing questions,
+      insurance verification, and payment arrangements.
+    required_prerequisites:
+      - patient_verification
+    optional_prerequisites:
+      - insurance_verification
+    example_utterances:
+      - "I have a question about my bill"
+      - "Need to set up a payment plan"
+      - "Does my insurance cover this procedure"
+      - "Haven't received my statement yet"
+
+global_rules:
+  emergency_keywords:
+    - "emergency"
+    - "severe pain"
+    - "chest pain"
+    - "cant breathe"
+    - "unconscious"
+  description: >
+      If any of these keywords are detected, the system should immediately
+      assess emergency status before proceeding with normal routing.
