@@ -1,0 +1,19 @@
+# pyproject.toml
+[project]
+name = "aintellivr"
+version = "0.1.0"
+description = "AI-powered Interactive Voice Response (IVR) system"
+requires-python = ">=3.11"
+dependencies = [
+    "fireworks-ai",
+    "llama-index-core",
+    "llama-index-llms-openai",
+    "pandas",
+    "python-dotenv",
+    "pillow",
+    "ipython",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

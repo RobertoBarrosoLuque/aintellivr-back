@@ -9,13 +9,7 @@ setup:
 
 install:
 	@echo "Installing dependencies..."
-	uv pip install fireworks-ai
-	uv pip install llama-index-core
-	uv pip install llama-index-llms-openai
-	uv pip install pandas
-	uv pip install python-dotenv
-	uv pip install pillow
-	uv pip install ipython
+	uv pip install -e .
 
 clean:
 	@echo "Cleaning up..."
