@@ -12,6 +12,7 @@ dependencies = [
     "python-dotenv",
     "pillow",
     "ipython",
+    "python-dotenv"
 ]
 
 [build-system]

@@ -16,14 +16,13 @@ class _Directories:
     """
 
     def __init__(self):
-        self.home = Path(__file__).resolve().parents[4]
-        self.root = Path(__file__).resolve().parents[3]
+        self.home = Path(__file__).resolve().parents[3]
+        self.root = Path(__file__).resolve().parents[2]
         self.cache_dir = self.root / "__cache__"
         self.data = self.home / "data"
         self.logs = self.home / "log"
         self.config_dir = self.home / "config"
         self.scripts = self.home / "scripts"
-
 
     def get_abs_path(self, base, path_parts: Union[str, list[str]]) -> str:
         if base not in self.__dict__:
