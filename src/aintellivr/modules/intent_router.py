@@ -1,13 +1,13 @@
 from typing import List, Optional, Dict
 from pydantic import BaseModel, Field
-from pathlib import Path
 from llama_index.llms.openai import OpenAI
+from llama_index.core.prompts import PromptTemplate
 
-from aintellivr.utils.prompt_loader import load_prompt_library
+from aintellivr.utils.prompt_loader import PROMPT_LIBRARY
 from aintellivr.utils.structured_predict import run_structured_prediction
 from aintellivr.utils.logging import logger
 from aintellivr.utils.load_llm import get_llm
-from aintellivr.utils.utils import RoutingConfiguration
+from aintellivr.utils.config_loaders import ROUTING_CONFIG
 
 
 class IntentClassification(BaseModel):
@@ -33,24 +33,19 @@ class IntentClassification(BaseModel):
 class IntentRouter:
     def __init__(
         self,
-        routing_config: RoutingConfiguration,
-        prompts_dir: Path,
         llm: Optional[OpenAI] = None,
-        llm_model: str = "gpt-4",
+        llm_model: str = "gpt-4.1-nano",
         temperature: float = 0.1,
     ):
         """
         Initialize the intent router.
 
         Args:
-            routing_config: Configuration for routing rules
-            prompts_dir: Directory containing prompt YAML files
             llm: Pre-loaded LLM instance (optional)
             llm_model: Model name to use if llm not provided
             temperature: Temperature setting if llm not provided
         """
-        self.routing_config = routing_config
-        self.prompt_library = load_prompt_library(prompts_dir)
+        self.routing_config = ROUTING_CONFIG
         self.llm = (
             llm
             if llm is not None
@@ -70,8 +65,8 @@ class IntentRouter:
 
     async def classify_intent(self, user_input: str) -> IntentClassification:
         """Classify the user's intent using structured prediction."""
-        prompt = self.prompt_library.get_prompt(
-            "intent_routing", "intent_classification"
+        prompt = PromptTemplate(
+            PROMPT_LIBRARY["intent_classification"]["template"],
         )
         if not prompt:
             raise ValueError("Intent classification prompt not found")

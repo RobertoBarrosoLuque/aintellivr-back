@@ -5,6 +5,7 @@ version = "0.1.0"
 description = "AI-powered Interactive Voice Response (IVR) system"
 requires-python = ">=3.11"
 dependencies = [
+    "pytest-asyncio",
     "fireworks-ai",
     "llama-index-core",
     "llama-index-llms-openai",
@@ -12,7 +13,8 @@ dependencies = [
     "python-dotenv",
     "pillow",
     "ipython",
-    "python-dotenv"
+    "python-dotenv",
+    "pytest"
 ]
 
 [build-system]

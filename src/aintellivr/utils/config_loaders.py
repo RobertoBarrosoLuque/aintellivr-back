@@ -96,3 +96,6 @@ def load_routing_config() -> RoutingConfiguration:
 
     except yaml.YAMLError as e:
         raise yaml.YAMLError(f"Error parsing YAML configuration: {str(e)}")
+
+
+ROUTING_CONFIG = load_routing_config()
